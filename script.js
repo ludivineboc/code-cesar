@@ -1,89 +1,61 @@
-/* Version for Each 
-bug : pas de possibilité d'encoder une seconde fois 
-function chiffrage(mot) {
-    const alphabet ="abcdefghijklmnopqrstuvwxyz" 
-    let motChiffre = "" //variable vide qui permettra de stocker le mot une fois chifré 
-    let arraymot=mot.trim()         // enlève les espaces avant et après
-                    .split('')      // range chaque lettre dans un tableau
-                    .filter((lettre) => lettre != " "); // enlève les espaces du tableau
-    
-    arraymot.forEach(lettre => { //je boucle sur mon tableau de lettre
-      
-      let indexnouvelleLettre =alphabet.indexOf(lettre)+1 // je récupére l'index de la lettre actuelle dans l'alphabet et j'ajoute un . Je stocke ca dans une variable
-      console.log(`ancienne lettre : ${lettre}, nouvelle lettre: ${alphabet[indexnouvelleLettre]}`) // je créer un commentaire avec l'ancienne lettre et l'ancienne lettre +1
-    
-      motChiffre += alphabet[indexnouvelleLettre].toLocaleUpperCase(); // j'enregistre la nouvelle lettre dans ma variable mot chiffré
-      return motChiffre;
-    });
-    
-    console.log(motChiffre) // je console mon mot chiffré 
-    document.querySelector("#box").innerHTML += 
-    `<p class="blue"><span>${motChiffre}</span> </p> `
-    
-  }
+
+function chiffrerMessage (message){
+// role : chiffrer le message
+// parametre : la valeur de l'input, le message
+
+  const alphabet = "abcdefghijklmnopqrstuvwxyz";
+  let messageEncode = ""; //stockera le message une fois qu'il sera encodé
+
+  //passer le message en minuscule
+  message = message.toLowerCase(); 
+
+  //transformer le string en array et supprimer les espaces 
+  //message = [...message].filter( (char) => char != " ");    
   
-  const button = document.querySelector('#myButton');
-  
-  button.addEventListener('click', function(event) {
-    console.log(event);
-    // Récupérer le contenu de l'input
-    let inputValue = document.querySelector('#myInput').value;
-    //setTimeout(function() { inputValue = ''; }, 5000);
-    chiffrage(inputValue);
-  });
-  
-  */
+  //transformer le message en array
+  message = message.split(""); 
 
+  message.forEach((lettre, index) => {
+    const posLettre = alphabet.indexOf(lettre); // recupéré l'index de la lettre
+    //const nextPos = pos+1 < alphabet.length ? pos+1 : 0;  // si on arrive à Z on repart a A en ternaire
+    let posLettreSuivante = posLettre + 1;
 
-
-function chiffrageMot(mot) {
-  //role : Encoder un mot
-  //parametre : le mot à encoder 
-
-      const alphabet = "abcdefghijklmnopqrstuvwxyz";
-      let motChiffre = ""; //variable vide qui permettra de stocker le mot une fois chiffré
-
-    for (i=0; i<mot.length; i++) {
-
-        if (mot[i]== " ") {
-              motChiffre+=" ";
-        } 
-         else {
-              let pos = alphabet.indexOf(mot[i]);
-              let posLettreSuivante = pos + 1;
-
-              if (posLettreSuivante === alphabet.length) {
-                // on revient a A
-                posLettreSuivante = 0;
-              }
-              
-              motChiffre += alphabet[posLettreSuivante].toLocaleUpperCase();
-              //console.log(motChiffre)
-        }
-        
+    // si c'est un espace, on ajoute un espace
+    if (lettre == " ") {
+      messageEncode += " ";
     }
-    document.querySelector("#box").innerHTML += 
-`<p class="blue"><span>${motChiffre}</span> </p> `
-    return motChiffre;  
-    
+
+    // si on arrive à Z, on repart a A
+    if (posLettreSuivante === alphabet.length) {
+      posLettreSuivante = 0;
+    }
+
+    //ajouter la lettre et la passer en majuscule
+    messageEncode += alphabet[posLettreSuivante].toUpperCase(); 
+  });
+  return messageEncode;
 }
 
 
 
-  const button = document.querySelector('#myButton');
-  
-  button.addEventListener('click', function(event) {
-    console.log(event);
-    // Récupérer le contenu de l'input
-    let inputValue = document.querySelector('#myInput').value;
-    
-    chiffrageMot(inputValue);
+function lancerChiffrage() {
+// role : lancer l'action de chiffrage au clic ou a la touche entrée
+// parametre : aucun 
+  let input = document.querySelector("#myInput"); // stocker la valeur de l'input
+  const destination = document.querySelector("#motCode"); // cibler l'élément HTML dans elquel le mot encodé va apparaitre 
+  destination.innerHTML = chiffrerMessage(input.value); // Jouer la fonction de chiffrage du message et la pousser dans l'html 
+  input.value = "";
+}
 
-  });
-  
+//lorsque la touche entré est préssé -> lancerChiffrage
+const button = document.querySelector("#myButton");
+document.addEventListener("keypress", function (event) {
+  if (event.key === "Enter") {
+    lancerChiffrage();
+  }
+});
 
-
-
-
-
-  
+//lorsque le bouton est cliqué -> lancerChiffrage
+button.addEventListener("click", (event) => {
+  lancerChiffrage();
+});
